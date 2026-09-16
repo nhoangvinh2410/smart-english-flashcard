@@ -1,12 +1,18 @@
 package com.flashcard.english_card.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "vocabularies")
 public class Vocabulary {
     @Id
@@ -26,4 +32,5 @@ public class Vocabulary {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
 }
