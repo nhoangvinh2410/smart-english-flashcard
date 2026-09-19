@@ -6,7 +6,6 @@ import com.flashcard.english_card.entity.Category;
 import com.flashcard.english_card.entity.Vocabulary;
 import com.flashcard.english_card.repository.CategoryRepository;
 import com.flashcard.english_card.repository.VocabularyRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +15,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class VocabularyServiceImpl implements VocabularyService{
-    @Autowired
-    private VocabularyRepository vocabularyRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final VocabularyRepository vocabularyRepository;
+    private final CategoryRepository categoryRepository;
+
+    public VocabularyServiceImpl(VocabularyRepository vocabularyRepository, CategoryRepository categoryRepository){
+        this.vocabularyRepository = vocabularyRepository;
+        this.categoryRepository = categoryRepository;
+    }
 
     @Override
     public VocabularyDTO createVocabulary(Long categoryId, VocabularyRequest request){
