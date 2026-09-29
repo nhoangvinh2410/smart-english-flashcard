@@ -1,4 +1,4 @@
-package com.flashcard.english_card.dto;
+package com.flashcard.english_card.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

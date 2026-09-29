@@ -1,4 +1,4 @@
-package com.flashcard.english_card.dto;
+package com.flashcard.english_card.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,4 +16,8 @@ public class VocabularyDTO {
     private String example;
     private String pronunciation;
     private int boxLevel;
+    private Long categoryId;
+    private String categoryName;
+
+
 }

@@ -1,4 +1,4 @@
-package com.flashcard.english_card.dto;
+package com.flashcard.english_card.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
