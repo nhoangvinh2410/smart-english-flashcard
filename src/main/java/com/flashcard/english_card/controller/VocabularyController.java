@@ -1,7 +1,7 @@
 package com.flashcard.english_card.controller;
 
-import com.flashcard.english_card.dto.VocabularyDTO;
-import com.flashcard.english_card.dto.VocabularyRequest;
+import com.flashcard.english_card.dto.response.VocabularyDTO;
+import com.flashcard.english_card.dto.request.VocabularyRequest;
 import com.flashcard.english_card.service.VocabularyService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,66 +13,54 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/vocabularies")
+@CrossOrigin(origins = "*")
 public class VocabularyController {
     private final  VocabularyService vocabularyService;
 
     @Autowired
     public VocabularyController(VocabularyService vocabularyService){
+
         this.vocabularyService = vocabularyService;
     }
 
-    //tạo từ vựng thuộc danh mục
-    @PostMapping("/category/{categoryId}")
+    //thêm 1 từ vựng mới vào từ điển
+    @PostMapping
     public ResponseEntity<VocabularyDTO> createVocabulary(
-            @PathVariable Long categoryId,
             @Valid @RequestBody VocabularyRequest request
             ){
         // Gọi "anh đầu bếp" Service để xử lý logic gán dữ liệu và lưu DB
-        VocabularyDTO createdVocab = vocabularyService.createVocabulary(categoryId, request);
+        VocabularyDTO createdVocab = vocabularyService.createVocabulary(request);
 
         // Trả kết quả về cho Client kèm mã HTTP 201 (Created - Đã tạo thành công)
         return new ResponseEntity<>(createdVocab, HttpStatus.CREATED);
     }
 
-    //lấy tất cả từ vựng thuộc về 1 danh mục
-    @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<VocabularyDTO>> getVocabulariesByCategory(@PathVariable Long categoryId){
-        return ResponseEntity.ok(vocabularyService.getVocabulariesByCategory(categoryId));
-    }
-
-    //chỉnh sửa nội dung từ vựng
+    //chỉnh sửa nội dung từ vựng (chỉ Admin)
     @PutMapping("/{id}")
-    public ResponseEntity<VocabularyDTO> updateVocabularyInfo(
+    public ResponseEntity<VocabularyDTO> updateVocabulary(
             @PathVariable Long id,
             @Valid @RequestBody VocabularyRequest request
     ){
-        return ResponseEntity.ok(vocabularyService.updateVocabularyInfo(id, request));
+        return ResponseEntity.ok(vocabularyService.updateVocabulary(id, request));
     }
 
-    //xóa từ vựng
+    //xóa từ vựng theo id
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteVocabulary(@PathVariable Long id){
         vocabularyService.deleteVocabulary(id);
-        return ResponseEntity.ok("Da xoa thanh cong tu vung");
+        return ResponseEntity.ok("Đã xóa thành công từ vựng");
     }
 
-    //lấy danh sách từ vựng cần ôn tập
-    @GetMapping("/review")
-    public ResponseEntity<List<VocabularyDTO>> getVocabulariesToReview(){
-        return ResponseEntity.ok(vocabularyService.getVocabulariesToReview());
+    //tìm kiếm từ vựng theo từ khóa
+    @GetMapping("/search")
+    public ResponseEntity<List<VocabularyDTO>> searchVocabularies(@RequestParam String keyword){
+        return ResponseEntity.ok(vocabularyService.searchVocabularies(keyword));
     }
 
-    //đánh giá lật thẻ thuộc / không thuộc
-    @PutMapping("/{id}/review")
-    public ResponseEntity<VocabularyDTO> processReview(
-        @PathVariable Long id,
-        @RequestParam boolean isCorrect
-    ){
-        return ResponseEntity.ok(vocabularyService.processReview(id, isCorrect));
+    //lấy thông tin chi tiết 1 từ vựng theo id
+    @GetMapping("/{id}")
+    public ResponseEntity<VocabularyDTO> getVocabularyById(@PathVariable Long id){
+        return ResponseEntity.ok(vocabularyService.getVocabularyById(id));
     }
-
-
-
-    
 
 }

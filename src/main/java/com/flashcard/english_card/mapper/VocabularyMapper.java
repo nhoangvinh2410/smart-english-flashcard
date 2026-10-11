@@ -2,7 +2,6 @@ package com.flashcard.english_card.mapper;
 
 import com.flashcard.english_card.dto.request.VocabularyRequest;
 import com.flashcard.english_card.dto.response.VocabularyDTO;
-import com.flashcard.english_card.entity.Category;
 import com.flashcard.english_card.entity.Vocabulary;
 import jakarta.persistence.*;
 import org.springframework.stereotype.Component;
@@ -12,14 +11,13 @@ import java.time.LocalDateTime;
 
 @Component
 public class VocabularyMapper {
-    public Vocabulary toEntity(VocabularyRequest request, Category category){
+    public Vocabulary toEntity(VocabularyRequest request){
         Vocabulary vocabulary = new Vocabulary();
         vocabulary.setWord(request.getWord());
         vocabulary.setPronunciation(request.getPronunciation());
         vocabulary.setImageUrl(request.getImageUrl());
         vocabulary.setMeaning(request.getMeaning());
         vocabulary.setExample(request.getExample());
-        vocabulary.setCategory(category); //Gắn từ vựng này vào một Danh mục
         return vocabulary;
     }
 
@@ -32,14 +30,17 @@ public class VocabularyMapper {
         vocabularyDTO.setImageUrl(vocabulary.getImageUrl());
         vocabularyDTO.setMeaning(vocabulary.getMeaning());
         vocabularyDTO.setExample(vocabulary.getExample());
-        vocabularyDTO.setBoxLevel(vocabulary.getBoxLevel());
-        /// Kiểm tra từ này có thuộc danh mục nào không
-        if(vocabulary.getCategory() != null){
-            vocabularyDTO.setCategoryId(vocabulary.getCategory().getId());
-            vocabularyDTO.setCategoryName(vocabulary.getCategory().getName());
-        }
         return vocabularyDTO;
     }
+
+    public void updateEntityFromRequest(VocabularyRequest request, Vocabulary vocabulary){
+        if(request == null || vocabulary == null) return;
+        vocabulary.setWord(request.getWord());
+        vocabulary.setMeaning(request.getMeaning());
+        vocabulary.setPronunciation(request.getPronunciation());
+        vocabulary.setExample(request.getExample());
+        vocabulary.setImageUrl(request.getImageUrl());
+    }
+
 }
 
-///xem lại cái này nha

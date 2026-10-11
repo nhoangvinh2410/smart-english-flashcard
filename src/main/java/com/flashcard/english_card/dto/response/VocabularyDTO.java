@@ -15,9 +15,6 @@ public class VocabularyDTO {
     private String imageUrl;
     private String example;
     private String pronunciation;
-    private int boxLevel;
-    private Long categoryId;
-    private String categoryName;
 
 
 }

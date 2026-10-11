@@ -1,16 +1,17 @@
 package com.flashcard.english_card.service;
 
-import com.flashcard.english_card.dto.CategoryDTO;
-import com.flashcard.english_card.dto.CategoryRequest;
+import com.flashcard.english_card.dto.response.CategoryDTO;
+import com.flashcard.english_card.dto.request.CategoryRequest;
 import com.flashcard.english_card.entity.Category;
 import com.flashcard.english_card.repository.CategoryRepository;
+import com.flashcard.english_card.service.impl.CategoryService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class CategoryServiceImpl implements CategoryService{
+public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     public CategoryServiceImpl(CategoryRepository categoryRepository){
 
