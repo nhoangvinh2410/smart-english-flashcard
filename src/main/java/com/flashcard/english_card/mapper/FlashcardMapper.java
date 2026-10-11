@@ -38,4 +38,14 @@ public class FlashcardMapper {
         flashcardDTO.setNextReviewDate(flashcard.getNextReviewDate());
         return flashcardDTO;
     }
+
+    public void updateEntityFromRequest(FlashcardRequest request, Flashcard flashcard){
+        if(request == null || flashcard == null) return;
+        flashcard.setWord(request.getWord());
+        flashcard.setMeaning(request.getMeaning());
+        flashcard.setPronunciation(request.getPronunciation());
+        flashcard.setExample(request.getExample());
+        flashcard.setImageUrl(request.getImageUrl());
+    }
+
 }

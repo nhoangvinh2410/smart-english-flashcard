@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FlashcardRequest {
-    @NotBlank(message = "Từ vựng phải thuộc về 1 bộ thẻ")
-    private Long flashcardId;
+//    @NotBlank(message = "Từ vựng phải thuộc về 1 bộ thẻ")
+//    private Long flashcardId; chỉ danh cho kiểu String và PathVariable tự truyền vào
     @NotBlank(message = "Từ tiếng Anh không được để trống")
     private String word;
     @NotBlank(message = "Từ tiếng Việt không được để trống")

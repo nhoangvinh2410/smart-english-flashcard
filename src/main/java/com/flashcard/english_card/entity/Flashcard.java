@@ -21,7 +21,7 @@ public class Flashcard {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flashcard_set_id", nullable = false)
-    private FlashcardSet flashcardSet;
+    private FlashcardSet flashcardSet; //nhiều thẻ thuộc 1 bộ
 
     @Column(nullable = false)
     private String word;
