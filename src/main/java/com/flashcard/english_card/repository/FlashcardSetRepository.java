@@ -8,7 +8,6 @@ import java.util.List;
 public interface FlashcardSetRepository extends JpaRepository<FlashcardSet, Long> {
     //lấy danh sách toàn bộ thẻ do 1 User tạo
     List<FlashcardSet> findByUserId(Long userId);
-    //lấy danh sách các thẻ bật chế độ công khai (true)
+    //lấy danh sách các bộ thẻ bật chế độ công khai (true)
     List<FlashcardSet> findByIsPublicTrue();
-
 }

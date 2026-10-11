@@ -14,5 +14,6 @@ public class FlashcardSetRequest {
 
     private String description;
     private Boolean isPublic = false; //chưa bật công khai
+    private Long categoryId;
 
 }

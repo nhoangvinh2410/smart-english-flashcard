@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,7 +30,17 @@ public class FlashcardSet {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User user; //nhìu bộ thẻ thuộc về 1 user
+
+    //nhiều bộ thẻ thuộc về 1 danh mục (Category)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    //xóa bộ thẻ sẽ tự động xóa tất cả các card bên trong
+    @OneToMany(mappedBy = "flashcardSet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Flashcard> flashcards;
+
     private LocalDateTime createAt = LocalDateTime.now();
 
 

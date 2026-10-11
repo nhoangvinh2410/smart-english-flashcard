@@ -20,6 +20,8 @@ public class FlashcardSetDTO {
     //thông tin chủ sở hữu
     private Long userId;
     private String authorName; //tên người tạo
+    private Long categoryId;
+    private String categoryName;
     private Integer totalCards; //tổng số từ vựng
 
     private LocalDateTime createAt;
