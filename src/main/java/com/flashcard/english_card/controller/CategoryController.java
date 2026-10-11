@@ -1,7 +1,7 @@
 package com.flashcard.english_card.controller;
 
-import com.flashcard.english_card.dto.CategoryDTO;
-import com.flashcard.english_card.dto.CategoryRequest;
+import com.flashcard.english_card.dto.response.CategoryDTO;
+import com.flashcard.english_card.dto.request.CategoryRequest;
 import com.flashcard.english_card.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")
+@CrossOrigin(origins = "*")
 public class CategoryController {
     private final CategoryService categoryService;
     public CategoryController(CategoryService categoryService){
@@ -36,7 +37,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
-    //chỉnh sửa tên danh mục
+    //cập nhật tên danh mục
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> updateCategory(
             @PathVariable Long id,
@@ -51,8 +52,5 @@ public class CategoryController {
         categoryService.deleteCategory(id);
         return ResponseEntity.ok("Đã xóa thành công danh mục");
     }
-
-
-
 
 }
