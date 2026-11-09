@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class VocabularyController {
 
     //thêm 1 từ vựng mới vào từ điển
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VocabularyDTO> createVocabulary(
             @Valid @RequestBody VocabularyRequest request
             ){
@@ -35,8 +37,9 @@ public class VocabularyController {
         return new ResponseEntity<>(createdVocab, HttpStatus.CREATED);
     }
 
-    //chỉnh sửa nội dung từ vựng (chỉ Admin)
+    //chỉnh sửa nội dung từ vựng
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VocabularyDTO> updateVocabulary(
             @PathVariable Long id,
             @Valid @RequestBody VocabularyRequest request
@@ -46,6 +49,7 @@ public class VocabularyController {
 
     //xóa từ vựng theo id
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteVocabulary(@PathVariable Long id){
         vocabularyService.deleteVocabulary(id);
         return ResponseEntity.ok("Đã xóa thành công từ vựng");
