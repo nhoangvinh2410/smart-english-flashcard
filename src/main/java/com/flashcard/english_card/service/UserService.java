@@ -1,9 +1,11 @@
-package com.flashcard.english_card.service.impl;
+package com.flashcard.english_card.service;
 
-import com.flashcard.english_card.dto.request.UserRegisterRequest;
+import com.flashcard.english_card.dto.request.UpdateProfileRequest;
 import com.flashcard.english_card.dto.response.UserDTO;
 
 public interface UserService {
-    UserDTO registerUser(UserRegisterRequest request);
-    UserDTO getUserById(Long id);
+    //dùng để đổi thông tin user
+    UserDTO updateProfile(String username, UpdateProfileRequest request);
+    //dùng để hiển thị thông tin khi đăng nhập thành công
+    UserDTO getCurrentUserProfile(String username);
 }

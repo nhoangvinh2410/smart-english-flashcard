@@ -3,6 +3,7 @@ package com.flashcard.english_card.mapper;
 import com.flashcard.english_card.dto.request.UserRegisterRequest;
 import com.flashcard.english_card.dto.response.UserDTO;
 import com.flashcard.english_card.entity.User;
+import com.flashcard.english_card.enums.Role;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -11,21 +12,25 @@ public class UserMapper {
     public User toEntity(UserRegisterRequest request) {
         User user = new User();
         user.setUsername(request.getUsername());
+        user.setFullName(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(request.getPassword());
-        user.setRole("USER");
+        user.setRole(Role.USER); // Truyền Enum Role.USER thay vì chuỗi "USER"
         return user;
     }
 
-    //đầu ra là dung ở database đóng gói đưa lên dto
+    //đầu ra là nội  dung ở database đóng gói đưa lên dto
     public UserDTO toDTO(User user) {
         if(user == null) return null;
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
         userDTO.setUsername(user.getUsername());
         userDTO.setEmail(user.getEmail());
-        userDTO.setRole(user.getRole());
-        userDTO.setCreatedAt(user.getCreateAt());
+        userDTO.setRole(user.getRole() != null ? user.getRole().name() : null);
+        userDTO.setEnabled(user.isEnabled());
+        userDTO.setCreatedAt(user.getCreatedAt());
+        userDTO.setFullName(user.getFullName());
+        userDTO.setAvatarUrl(user.getAvatarUrl());
         return userDTO;
     }
 }

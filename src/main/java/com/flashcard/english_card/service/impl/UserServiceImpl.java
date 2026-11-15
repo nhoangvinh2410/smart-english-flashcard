@@ -1,11 +1,11 @@
-package com.flashcard.english_card.service;
+package com.flashcard.english_card.service.impl;
 
-import com.flashcard.english_card.dto.request.UserRegisterRequest;
+import com.flashcard.english_card.dto.request.UpdateProfileRequest;
 import com.flashcard.english_card.dto.response.UserDTO;
 import com.flashcard.english_card.entity.User;
 import com.flashcard.english_card.mapper.UserMapper;
 import com.flashcard.english_card.repository.UserRepository;
-import com.flashcard.english_card.service.impl.UserService;
+import com.flashcard.english_card.service.UserService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,26 +19,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO registerUser(UserRegisterRequest request){
-        //kểm tra username và email đã tồn tại chưa
-        if(userRepository.existsByUsername(request.getUsername())){
-            throw new RuntimeException("Tên đăng nhập đã tồn tại");
+    //dùng để đổi thông tin user
+    public UserDTO updateProfile(String username, UpdateProfileRequest request){
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(()-> new RuntimeException("Không tìm thấy người dùng"));
+        if(request.getFullName() != null){
+            user.setFullName(request.getFullName());
         }
-        if(userRepository.existsByEmail(request.getEmail())){
-            throw new RuntimeException("Email đã tồn tại");
+        if(request.getAvatarUrl() != null){
+            user.setAvatarUrl(request.getAvatarUrl());
         }
-        //dto -> entity
-        User user = userMapper.toEntity(request);
-        User saveUser = userRepository.save(user);
-        //entity -> dto
-        return userMapper.toDTO(saveUser);
+
+        User updateUser = userRepository.save(user);
+        return userMapper.toDTO(updateUser);
     }
 
     @Override
-    public UserDTO getUserById(Long id){
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với ID" + id));
+    //dùng để hiển thị thông tin khi đăng nhập thành công
+    public UserDTO getCurrentUserProfile(String username){
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(()-> new RuntimeException("Không tìm thấy người dùng"));
         return userMapper.toDTO(user);
     }
+
 
 }
