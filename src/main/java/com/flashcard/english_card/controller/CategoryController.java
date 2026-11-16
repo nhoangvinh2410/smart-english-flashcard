@@ -6,6 +6,7 @@ import com.flashcard.english_card.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,35 +22,48 @@ public class CategoryController {
 
     //tạo thư mục mới
     @PostMapping
-    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryRequest request){
-        return new ResponseEntity<>(categoryService.createCategory(request), HttpStatus.CREATED);
+    public ResponseEntity<CategoryDTO> createCategory(
+            Authentication authentication,
+            @Valid @RequestBody CategoryRequest request){
+        String username = authentication.getName();
+        CategoryDTO created = categoryService.createCategory(username, request);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
     //lấy danh sách tất cả danh mục mục
     @GetMapping
-    public ResponseEntity<List<CategoryDTO>> getAllCategories(){
-        return ResponseEntity.ok(categoryService.getAllCategories());
+    public ResponseEntity<List<CategoryDTO>> getAllCategories(Authentication authentication){
+        String username = authentication.getName();
+        return ResponseEntity.ok(categoryService.getAllCategories(username));
     }
 
     //lấy thông tin 1 danh mục theo id
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id){
-        return ResponseEntity.ok(categoryService.getCategoryById(id));
+    public ResponseEntity<CategoryDTO> getCategoryById(
+            Authentication authentication,
+            @PathVariable Long id){
+        String username = authentication.getName();
+        return ResponseEntity.ok(categoryService.getCategoryById(id, username));
     }
 
     //cập nhật tên danh mục
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDTO> updateCategory(
+            Authentication authentication,
             @PathVariable Long id,
             @Valid @RequestBody CategoryRequest request
     ){
-        return ResponseEntity.ok(categoryService.updateCategory(id, request));
+        String username = authentication.getName();
+        return ResponseEntity.ok(categoryService.updateCategory(id, username, request));
     }
 
     //xóa danh mục
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id){
-        categoryService.deleteCategory(id);
+    public ResponseEntity<String> deleteCategory(
+            Authentication authentication,
+            @PathVariable Long id){
+        String username = authentication.getName();
+        categoryService.deleteCategory(id, username);
         return ResponseEntity.ok("Đã xóa thành công danh mục");
     }
 

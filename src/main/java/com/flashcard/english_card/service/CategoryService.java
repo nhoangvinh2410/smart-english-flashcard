@@ -6,9 +6,9 @@ import com.flashcard.english_card.dto.request.CategoryRequest;
 import java.util.List;
 
 public interface CategoryService {
-    CategoryDTO createCategory(CategoryRequest request);
-    List<CategoryDTO> getAllCategories();
-    CategoryDTO getCategoryById(Long id);
-    CategoryDTO updateCategory(Long id, CategoryRequest request);
-    void deleteCategory(Long id);
+    CategoryDTO createCategory(String username, CategoryRequest request);
+    List<CategoryDTO> getAllCategories(String username);
+    CategoryDTO getCategoryById(Long id, String username);
+    CategoryDTO updateCategory(Long id, String username, CategoryRequest request);
+    void deleteCategory(Long id, String username);
 }
