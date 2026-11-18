@@ -4,9 +4,11 @@ import com.flashcard.english_card.dto.request.FlashcardRequest;
 import com.flashcard.english_card.dto.response.FlashcardDTO;
 import com.flashcard.english_card.entity.Flashcard;
 import com.flashcard.english_card.entity.FlashcardSet;
+import com.flashcard.english_card.entity.User;
 import com.flashcard.english_card.mapper.FlashcardMapper;
 import com.flashcard.english_card.repository.FlashcardRepository;
 import com.flashcard.english_card.repository.FlashcardSetRepository;
+import com.flashcard.english_card.repository.UserRepository;
 import com.flashcard.english_card.service.FlashcardService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,20 +21,31 @@ public class FlashcardServiceImpl implements FlashcardService {
     private final FlashcardRepository flashcardRepository;
     private final FlashcardMapper flashcardMapper;
     private final FlashcardSetRepository flashcardSetRepository;
+    private final UserRepository userRepository;
 
-    public FlashcardServiceImpl(FlashcardRepository flashcardRepository,
-                                   FlashcardMapper flashcardMapper,
-                                   FlashcardSetRepository flashcardSetRepository){
+    public FlashcardServiceImpl(
+            FlashcardRepository flashcardRepository,
+            FlashcardMapper flashcardMapper,
+            FlashcardSetRepository flashcardSetRepository,
+            UserRepository userRepository){
         this.flashcardRepository = flashcardRepository;
         this.flashcardMapper = flashcardMapper;
         this.flashcardSetRepository = flashcardSetRepository;
+        this.userRepository = userRepository;
     }
 
-    //tạo thẻ mới trong bộ thẻ (setId là id của bộ thẻ)
+    // Hàm dùng chung lấy User đang đăng nhập (xem user có tồn tại)
+    private User getCurrentUser(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+    }
+
+    //tạo thẻ mới trong bộ thẻ
     @Override
     @Transactional
-    public FlashcardDTO createCard(Long setId, FlashcardRequest request, Long userId){
-        FlashcardSet set = validateSetOwnership(setId, userId);
+    public FlashcardDTO createCard(Long setId, FlashcardRequest request, String username){
+        User currentUser = getCurrentUser(username);
+        FlashcardSet set = validateSetOwnership(setId, currentUser.getId());
         Flashcard card = flashcardMapper.toEntity(request, set);
         card.setBoxLevel(1);
         card.setNextReviewDate(LocalDateTime.now());
@@ -42,8 +55,9 @@ public class FlashcardServiceImpl implements FlashcardService {
 
     //lấy danh sách thẻ trong 1 bộ thẻ
     @Override
-    public List<FlashcardDTO> getCardsBySetId(Long setId, Long userId){
-        validateSetOwnership(setId, userId);
+    public List<FlashcardDTO> getCardsBySetId(Long setId, String username){
+        User currentUser = getCurrentUser(username);
+        validateSetOwnership(setId, currentUser.getId());
         List<Flashcard> cards = flashcardRepository.findByFlashcardSetId(setId);
         return cards.stream().map(flashcardMapper::toDTO).toList();
     }
@@ -51,9 +65,10 @@ public class FlashcardServiceImpl implements FlashcardService {
     //cập nhật nội dung thẻ
     @Override
     @Transactional
-    public FlashcardDTO updateCard(Long cardId, FlashcardRequest request, Long userId){
+    public FlashcardDTO updateCard(Long cardId, FlashcardRequest request, String username){
+        User currentUser = getCurrentUser(username);
         //tìm thẻ cũ từ Database (Đã có ID, BoxLevel, NextReviewDate...)
-        Flashcard card  = validateCardOwnership(cardId, userId);
+        Flashcard card  = validateCardOwnership(cardId, currentUser.getId());
         //mapper cập nhật thông tin mới vào thẻ cũ
         flashcardMapper.updateEntityFromRequest(request, card);
         //lưu lại -> dto
@@ -64,18 +79,20 @@ public class FlashcardServiceImpl implements FlashcardService {
     //xóa thẻ
     @Override
     @Transactional
-    public void deleteCard(Long cardId, Long userId){
+    public void deleteCard(Long cardId, String username){
+        User currentUser = getCurrentUser(username);
         //kiểm tra quyền sở hữu
-        Flashcard card = validateCardOwnership(cardId, userId);
+        Flashcard card = validateCardOwnership(cardId, currentUser.getId());
         flashcardRepository.delete(card);
     }
 
     //ôn tập 1 thẻ
     @Override
     @Transactional
-    public FlashcardDTO review(Long cardId, boolean isCorrect, Long userId){
+    public FlashcardDTO review(Long cardId, boolean isCorrect, String username){
+        User currentUser = getCurrentUser(username);
         //kiểm tra quyền sở hữu
-        Flashcard card = validateCardOwnership(cardId, userId);
+        Flashcard card = validateCardOwnership(cardId, currentUser.getId());
         //tính toán boxlevel mới
         //trả lời đúng tăng level (tối đa 5), sai thì reset về 1
         int currentLevel = card.getBoxLevel();
@@ -101,10 +118,11 @@ public class FlashcardServiceImpl implements FlashcardService {
     //lấy các thẻ cần ôn tập hôm nay của user
     @Override
     @Transactional(readOnly = true)
-    public List<FlashcardDTO> getDueCards(Long userId){
+    public List<FlashcardDTO> getDueCards(String username){
+        User currentUser = getCurrentUser(username);
         //lấy danh sách thẻ có ngày hẹn ôn (nhỏ hơn hoặc bằng "thời điểm hiện tại")
         List<Flashcard> dueCards = flashcardRepository
-                .findByFlashcardSetUserIdAndNextReviewDateLessThanEqual(userId, LocalDateTime.now());
+                .findByFlashcardSetUserIdAndNextReviewDateLessThanEqual(currentUser.getId(), LocalDateTime.now());
         return dueCards.stream().map(flashcardMapper::toDTO).toList();
     }
 
