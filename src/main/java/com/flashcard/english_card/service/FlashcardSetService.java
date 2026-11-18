@@ -7,15 +7,15 @@ import java.util.List;
 
 public interface  FlashcardSetService {
     //Tạo bộ thẻ mới cho 1 user
-    FlashcardSetDTO createSet(FlashcardSetRequest request, Long userId);
-    //Lấy danh sách bộ thẻ cá nhân của user (kèm tổng số card)
-    List<FlashcardSetDTO> getSetsByUserId(Long userId);
+    FlashcardSetDTO createSet(FlashcardSetRequest request, String username);
+    //Lấy danh sách bộ thẻ cá nhân của user đang đăng nhập
+    List<FlashcardSetDTO> getMySets(String username);
     //Lấy danh sách các bộ thẻ công khai (kèm tổng số card)
     List<FlashcardSetDTO> getPublicSets();
-    //xem chi tiết 1 bộ thẻ theo id
-     FlashcardSetDTO getSetById(Long setId);
+    //xem chi tiết 1 bộ thẻ theo id (kiểm tra quyền nếu là bộ thẻ riêng tư)
+     FlashcardSetDTO getSetById(Long setId, String username);
      //cập nhật bộ thẻ
-    FlashcardSetDTO updateSet(Long setId, FlashcardSetRequest request, Long userId);
-    //xóa bộ thẻ (phải biết người xóa là ai)
-    void deleteSet(Long setId, Long userId);
+    FlashcardSetDTO updateSet(Long setId, FlashcardSetRequest request, String username);
+    //xóa bộ thẻ
+    void deleteSet(Long setId, String username);
 }

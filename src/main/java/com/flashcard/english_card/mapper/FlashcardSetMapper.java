@@ -46,8 +46,6 @@ public class FlashcardSetMapper {
         return flashcardSetDTO;
     }
 
-
-    /// ///xem lại cái này nha
     public void updateEntityFromRequest(FlashcardSetRequest request, FlashcardSet flashcardSet, Category category) {
         if (request == null || flashcardSet == null) return;
 
@@ -58,10 +56,7 @@ public class FlashcardSetMapper {
         if (request.getIsPublic() != null) {
             flashcardSet.setPublic(request.getIsPublic());
         }
-
-        if (category != null) {
             flashcardSet.setCategory(category);
-        }
     }
 
 }
