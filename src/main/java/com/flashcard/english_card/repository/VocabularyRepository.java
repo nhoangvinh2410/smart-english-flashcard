@@ -8,5 +8,5 @@ public interface VocabularyRepository extends JpaRepository<Vocabulary, Long> {
     //phục vụ tính năng gợi ý từ vựng
     List<Vocabulary> findByWordContainingIgnoreCase(String keyword);
     //kiểm tra từ đã tồn tại trong từ điển h
-    boolean existsByWord(String word);
+    boolean existsByWordIgnoreCase(String word);
 }

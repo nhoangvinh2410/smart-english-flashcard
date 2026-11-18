@@ -26,9 +26,10 @@ public class VocabularyServiceImpl implements VocabularyService {
     @Override
     @Transactional
     public VocabularyDTO createVocabulary(VocabularyRequest request){
-        if(vocabularyRepository.existsByWord(request.getWord())){
+        if(vocabularyRepository.existsByWordIgnoreCase(request.getWord().trim())){
             throw new RuntimeException("Từ này đã tồn tại trong kho từ vựng");
         }
+        request.setWord(request.getWord().trim());
         Vocabulary vocabulary = vocabularyMapper.toEntity(request);
         Vocabulary saveVoca = vocabularyRepository.save(vocabulary);
         return vocabularyMapper.toDTO(saveVoca);
@@ -61,6 +62,12 @@ public class VocabularyServiceImpl implements VocabularyService {
     public VocabularyDTO updateVocabulary(Long id, VocabularyRequest request){
         Vocabulary vocabulary = vocabularyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy từ vựng"));
+        // Chỉ báo lỗi nếu đổi sang một từ mới mà từ đó đã tồn tại ở bản ghi khác
+        if(!vocabulary.getWord().equalsIgnoreCase(request.getWord().trim())
+                && vocabularyRepository.existsByWordIgnoreCase(request.getWord().trim())){
+            throw new RuntimeException("Từ vựng '" + request.getWord().trim() + "' đã tồn tại trong từ điển");
+        }
+        request.setWord(request.getWord().trim());
         vocabularyMapper.updateEntityFromRequest(request, vocabulary);
         Vocabulary updateVoca = vocabularyRepository.save(vocabulary);
         return vocabularyMapper.toDTO(updateVoca);

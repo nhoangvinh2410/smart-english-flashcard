@@ -18,6 +18,8 @@ public class Vocabulary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    //kh đc rỗng và là duy nhất
+    @Column(nullable = false, unique = true)
     private String word;
     private String pronunciation;
     private String imageUrl;
